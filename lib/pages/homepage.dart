@@ -1,91 +1,113 @@
+import 'package:fintech/provider/portofolio_provider.dart';
 import 'package:fintech/theme.dart';
+import 'package:fintech/widgets/portofolio_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  void initState() {
+    Provider.of<PortofolioProvider>(context, listen: false).getPortofolio();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: greenColor,
-      body: SafeArea(
-        bottom: false,
-        child: Stack(
+    PortofolioProvider portofolioProvider =
+        Provider.of<PortofolioProvider>(context);
+    // di bawah ini digunakan untuk membuat component header
+    Widget header() {
+      return Container(
+        margin: EdgeInsets.only(top: 30),
+        padding: EdgeInsets.only(left: 30, right: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Positioned(
-              bottom: -20,
-              left: -60,
-              child: Image.asset(
-                'assets/image_hand.png',
-                width: 250,
+            Image.asset(
+              'assets/logo.png',
+              width: 40,
+            ),
+            Row(
+              children: [
+                Image.asset(
+                  'assets/ic_notif.png',
+                  width: 20,
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Image.asset(
+                  'assets/avatar.png',
+                  width: 20,
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+    }
+
+    // di bawah ini digunakan untuk membuat component portofolio title
+    Widget portofolioTitle() {
+      return Container(
+        margin: EdgeInsets.only(top: 30),
+        padding: EdgeInsets.only(left: 30, right: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Portofolio',
+              style: blackTextStyle.copyWith(
+                fontSize: 16,
+                fontWeight: semiBold,
               ),
             ),
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // SizedBox(
-                  //   height: 80,
-                  // ),
-                  Image.asset(
-                    'assets/image_onboarding.png',
-                    width: 355,
-                  ),
-                  SizedBox(
-                    height: 80,
-                  ),
-                  Text(
-                    'Better Way For You',
-                    style: whiteTextStyle.copyWith(
-                      fontSize: 24,
-                      fontWeight: medium,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    'What can we say if there is a app\nthat you can transfer money without\ngetting any fee? Promisely',
-                    style: whiteTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: light,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 70,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 48,
-                            vertical: 14,
-                          ),
-                          decoration: BoxDecoration(
-                            color: yellowColor,
-                            borderRadius: BorderRadius.horizontal(
-                              left: Radius.circular(20),
-                            ),
-                          ),
-                          child: Text(
-                            'OK, BRING ME IN',
-                            style: blackTextStyle.copyWith(
-                              fontSize: 18,
-                              fontWeight: medium,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+            Text(
+              'See All',
+              style: greyTextStyle.copyWith(
+                fontSize: 12,
+                fontWeight: light,
               ),
             ),
           ],
         ),
-      ),
+      );
+    }
+
+    // di bawah ini digunakan untuk membuat component portofolio
+    Widget portofolio() {
+      return Container(
+        margin: EdgeInsets.only(top: 30),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 30,
+              ),
+              Row(
+                children: portofolioProvider.portofolios
+                    .map((portofolio) => PortofolioCard(portofolio: portofolio))
+                    .toList(),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
+    return ListView(
+      children: [
+        // di bawah ini digunakan untuk membuat component persection
+
+        // section judul
+        header(),
+        portofolioTitle(),
+        portofolio(),
+      ],
     );
   }
 }
